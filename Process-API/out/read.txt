@@ -1,0 +1,3 @@
+abcdef
+parent's write
+chrild's write
