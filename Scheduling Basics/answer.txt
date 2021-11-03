@@ -1,0 +1,70 @@
+1.使用 SJF 和 FIFO 调度程序运行长度为 200 的 3 个作业时,计算响应时间和周转时间。
+//SJF
+fang@fang:~/code/Operating Systream/Scheduling Basics$ python3 scheduler.py -p SJF -j 3  -l 200,200,200 -c
+Final statistics:
+  Job   0 -- Response: 0.00  Turnaround 200.00  Wait 0.00
+  Job   1 -- Response: 200.00  Turnaround 400.00  Wait 200.00
+  Job   2 -- Response: 400.00  Turnaround 600.00  Wait 400.00
+
+  Average -- Response: 200.00  Turnaround 400.00  Wait 200.00
+
+//FIFO
+fang@fang:~/code/Operating Systream/Scheduling Basics$ python3 scheduler.py -p FIFO -j 3  -l 200,200,200 -c
+
+Final statistics:
+  Job   0 -- Response: 0.00  Turnaround 200.00  Wait 0.00
+  Job   1 -- Response: 200.00  Turnaround 400.00  Wait 200.00
+  Job   2 -- Response: 400.00  Turnaround 600.00  Wait 400.00
+
+  Average -- Response: 200.00  Turnaround 400.00  Wait 200.00
+
+2.现在做同样的事情,但有不同长度的作业,即 100、200 和 300
+fang@fang:~/code/Operating Systream/Scheduling Basics$ python3 scheduler.py -p SJF -j 3  -l 100,200,300 -c
+Final statistics:
+  Job   0 -- Response: 0.00  Turnaround 100.00  Wait 0.00
+  Job   1 -- Response: 100.00  Turnaround 300.00  Wait 100.00
+  Job   2 -- Response: 300.00  Turnaround 600.00  Wait 300.00
+
+  Average -- Response: 133.33  Turnaround 333.33  Wait 133.33
+
+fang@fang:~/code/Operating Systream/Scheduling Basics$ python3 scheduler.py -p FIFO -j 3  -l 100,200,300 -c
+Final statistics:
+  Job   0 -- Response: 0.00  Turnaround 100.00  Wait 0.00
+  Job   1 -- Response: 100.00  Turnaround 300.00  Wait 100.00
+  Job   2 -- Response: 300.00  Turnaround 600.00  Wait 300.00
+
+  Average -- Response: 133.33  Turnaround 333.33  Wait 133.33
+
+3.现在做同样的事情,但采用 RR 调度程序,时间片为 1
+python3 scheduler.py -p RR -j 3  -l 200,200,200 -q 1 -c
+Final statistics:
+  Job   0 -- Response: 0.00  Turnaround 598.00  Wait 398.00
+  Job   1 -- Response: 1.00  Turnaround 599.00  Wait 399.00
+  Job   2 -- Response: 2.00  Turnaround 600.00  Wait 400.00
+
+  Average -- Response: 1.00  Turnaround 599.00  Wait 399.00
+
+python3 scheduler.py -p RR -j 3  -l 100,200,300 -q 1 -c
+Final statistics:
+  Job   0 -- Response: 0.00  Turnaround 298.00  Wait 198.00
+  Job   1 -- Response: 1.00  Turnaround 499.00  Wait 299.00
+  Job   2 -- Response: 2.00  Turnaround 600.00  Wait 300.00
+
+  Average -- Response: 1.00  Turnaround 465.67  Wait 265.67
+
+4.对于什么类型的工作负载,SJF 提供与 FIFO 相同的周转时间?
+运行时间相同的任务
+
+5.对于什么类型的工作负载和量子长度(时间片长度),SJF 与 RR 提供相同的响应时间?
+运行时间 <= 时间片
+
+6.随着工作长度的增加,SJF 的响应时间会怎样?你能使用模拟程序来展示趋势吗?
+响应时间变长
+
+7.随着量子长度(时间片长度)的增加,RR 的响应时间会怎样?你能写出一个方程,计算给定 N 个
+
+工作时,最坏情况的响应时间吗?
+
+平均响应时间增加
+
+时间片 >= 工作最长运行时间时,有最坏情况 即 ti 为作业运行时间 res_avg = (0 + t1 + (t1+t2) + (t1+t2+t3) + ... (t1+t2+t3 +...tN-1))/N
