@@ -1,0 +1,74 @@
+1.对于线性页表，假设硬件在 TLB 未命中时进行查找，则需要一个寄存器来定位页表。 您需要多少个寄存器才能找到两级页表？ 三级页表？
+需要一个PDBR寄存器
+
+2.使用模拟器对随机种子 0、1 和 2 执行翻译，并使用-c 标志检查你的答案。需要多少内存引用来执行每次查找？
+
+1:
+虚拟地址:611c(16) -> 11000 01000 11100(2) -> 24 8 28(10)
+PDBR 为 108,页目录索引为 24(108 页第 24 项) -> PDE 为 a1
+a1 -> 1 0100001(2) -> 有效位为 1, 页帧号为 33(10)
+页帧号 33,页表索引 8(第 33 页第 8 个字节) -> PTE 为 b5
+b5 -> 1 0110101(2) -> 有效位为 1, 物理页号为 53(10)
+物理页号 53,偏移为 28(第 53 页,第 28 字节) -> 物理地址为 08
+
+2:
+虚拟地址 3da8(16) 01111 01101 01000(2) -> 15 13 8(10)
+PDBR 为 108, 页目录索引为 15 -> PDE 为 d6
+d6 -> 1 1010110(2) -> 有效位为 1, 页帧号为 86(10)
+页帧号 86,索引为 13 -> 物理页号 7f 
+7f(16) -> 01111111(2) -> 无效
+
+3:
+虚拟地址 17f5(16) -> 00101 11111 10101(2) -> 5 31 21(10)
+PDBR 为 108, 页目录索引为 5 -> PDE 为 d4
+d4 -> 1 1010100 -> 一位有效位, 页帧号为 84
+页帧号 84,索引 31 -> PTE 为 ce
+ce -> 1 1001110 -> 一位有效位,物理页号为 78,偏移为 21 -> 物理地址为 1c
+
+...其余算法类似
+
+PDBR: 108  (decimal) [This means the page directory is held in this page]
+
+Virtual Address 611c:
+  --> pde index:0x18 [decimal 24] pde contents:0xa1 (valid 1, pfn 0x21 [decimal 33])
+    --> pte index:0x8 [decimal 8] pte contents:0xb5 (valid 1, pfn 0x35 [decimal 53])
+      --> Translates to Physical Address 0x6bc --> Value: 08
+Virtual Address 3da8:
+  --> pde index:0xf [decimal 15] pde contents:0xd6 (valid 1, pfn 0x56 [decimal 86])
+    --> pte index:0xd [decimal 13] pte contents:0x7f (valid 0, pfn 0x7f [decimal 127])
+      --> Fault (page table entry not valid)
+Virtual Address 17f5:
+  --> pde index:0x5 [decimal 5] pde contents:0xd4 (valid 1, pfn 0x54 [decimal 84])
+    --> pte index:0x1f [decimal 31] pte contents:0xce (valid 1, pfn 0x4e [decimal 78])
+      --> Translates to Physical Address 0x9d5 --> Value: 1c
+Virtual Address 7f6c:
+  --> pde index:0x1f [decimal 31] pde contents:0xff (valid 1, pfn 0x7f [decimal 127])
+    --> pte index:0x1b [decimal 27] pte contents:0x7f (valid 0, pfn 0x7f [decimal 127])
+      --> Fault (page table entry not valid)
+Virtual Address 0bad:
+  --> pde index:0x2 [decimal 2] pde contents:0xe0 (valid 1, pfn 0x60 [decimal 96])
+    --> pte index:0x1d [decimal 29] pte contents:0x7f (valid 0, pfn 0x7f [decimal 127])
+      --> Fault (page table entry not valid)
+Virtual Address 6d60:
+  --> pde index:0x1b [decimal 27] pde contents:0xc2 (valid 1, pfn 0x42 [decimal 66])
+    --> pte index:0xb [decimal 11] pte contents:0x7f (valid 0, pfn 0x7f [decimal 127])
+      --> Fault (page table entry not valid)
+Virtual Address 2a5b:
+  --> pde index:0xa [decimal 10] pde contents:0xd5 (valid 1, pfn 0x55 [decimal 85])
+    --> pte index:0x12 [decimal 18] pte contents:0x7f (valid 0, pfn 0x7f [decimal 127])
+      --> Fault (page table entry not valid)
+Virtual Address 4c5e:
+  --> pde index:0x13 [decimal 19] pde contents:0xf8 (valid 1, pfn 0x78 [decimal 120])
+    --> pte index:0x2 [decimal 2] pte contents:0x7f (valid 0, pfn 0x7f [decimal 127])
+      --> Fault (page table entry not valid)
+Virtual Address 2592:
+  --> pde index:0x9 [decimal 9] pde contents:0x9e (valid 1, pfn 0x1e [decimal 30])
+    --> pte index:0xc [decimal 12] pte contents:0xbd (valid 1, pfn 0x3d [decimal 61])
+      --> Translates to Physical Address 0x7b2 --> Value: 1b
+Virtual Address 3e99:
+  --> pde index:0xf [decimal 15] pde contents:0xd6 (valid 1, pfn 0x56 [decimal 86])
+    --> pte index:0x14 [decimal 20] pte contents:0xca (valid 1, pfn 0x4a [decimal 74])
+      --> Translates to Physical Address 0x959 --> Value: 1e
+
+3.根据你对缓存内存的工作原理的理解，你认为对页表的内存引用如何在缓存中工作？它们是否会导致大量的缓存命中（并导致快速访问）或者很多未命中（并导致访问缓慢）？
+命不命中是看场景和 TLB 使用的缓存置换算法
