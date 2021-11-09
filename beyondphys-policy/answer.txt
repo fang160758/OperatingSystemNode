@@ -1,0 +1,87 @@
+1.使用以下参数生成随机地址：-s 0 -n 10,-s 1 -n 10 和-s 2 -n 10.将策略从 FIFO 更改为 LRU,并将其更改为 OPT.计算所述地址追踪中的每个访问是否命中或未命中。
+fang@fang:~/code/Operating Systream/beyondphys-policy$ python3 paging-policy.py  -s 0 -n 10 -c
+ARG addresses -1
+ARG addressfile 
+ARG numaddrs 10
+ARG policy FIFO
+ARG clockbits 2
+ARG cachesize 3
+ARG maxpage 10
+ARG seed 0
+ARG notrace False
+
+Solving...
+
+Access: 8  MISS FirstIn ->          [8] <- Lastin  Replaced:- [Hits:0 Misses:1]
+Access: 7  MISS FirstIn ->       [8, 7] <- Lastin  Replaced:- [Hits:0 Misses:2]
+Access: 4  MISS FirstIn ->    [8, 7, 4] <- Lastin  Replaced:- [Hits:0 Misses:3]
+Access: 2  MISS FirstIn ->    [7, 4, 2] <- Lastin  Replaced:8 [Hits:0 Misses:4]
+Access: 5  MISS FirstIn ->    [4, 2, 5] <- Lastin  Replaced:7 [Hits:0 Misses:5]
+Access: 4  HIT  FirstIn ->    [4, 2, 5] <- Lastin  Replaced:- [Hits:1 Misses:5]
+Access: 7  MISS FirstIn ->    [2, 5, 7] <- Lastin  Replaced:4 [Hits:1 Misses:6]
+Access: 3  MISS FirstIn ->    [5, 7, 3] <- Lastin  Replaced:2 [Hits:1 Misses:7]
+Access: 4  MISS FirstIn ->    [7, 3, 4] <- Lastin  Replaced:5 [Hits:1 Misses:8]
+Access: 5  MISS FirstIn ->    [3, 4, 5] <- Lastin  Replaced:7 [Hits:1 Misses:9]
+
+FINALSTATS hits 1   misses 9   hitrate 10.00
+
+fang@fang:~/code/Operating Systream/beyondphys-policy$ python3 paging-policy.py  -s 1 -n 10 -c
+ARG addresses -1
+ARG addressfile 
+ARG numaddrs 10
+ARG policy FIFO
+ARG clockbits 2
+ARG cachesize 3
+ARG maxpage 10
+ARG seed 1
+ARG notrace False
+
+Solving...
+
+Access: 1  MISS FirstIn ->          [1] <- Lastin  Replaced:- [Hits:0 Misses:1]
+Access: 8  MISS FirstIn ->       [1, 8] <- Lastin  Replaced:- [Hits:0 Misses:2]
+Access: 7  MISS FirstIn ->    [1, 8, 7] <- Lastin  Replaced:- [Hits:0 Misses:3]
+Access: 2  MISS FirstIn ->    [8, 7, 2] <- Lastin  Replaced:1 [Hits:0 Misses:4]
+Access: 4  MISS FirstIn ->    [7, 2, 4] <- Lastin  Replaced:8 [Hits:0 Misses:5]
+Access: 4  HIT  FirstIn ->    [7, 2, 4] <- Lastin  Replaced:- [Hits:1 Misses:5]
+Access: 6  MISS FirstIn ->    [2, 4, 6] <- Lastin  Replaced:7 [Hits:1 Misses:6]
+Access: 7  MISS FirstIn ->    [4, 6, 7] <- Lastin  Replaced:2 [Hits:1 Misses:7]
+Access: 0  MISS FirstIn ->    [6, 7, 0] <- Lastin  Replaced:4 [Hits:1 Misses:8]
+Access: 0  HIT  FirstIn ->    [6, 7, 0] <- Lastin  Replaced:- [Hits:2 Misses:8]
+
+FINALSTATS hits 2   misses 8   hitrate 20.00
+
+fang@fang:~/code/Operating Systream/beyondphys-policy$ python3 paging-policy.py  -s 2 -n 10 -c
+ARG addresses -1
+ARG addressfile 
+ARG numaddrs 10
+ARG policy FIFO
+ARG clockbits 2
+ARG cachesize 3
+ARG maxpage 10
+ARG seed 2
+ARG notrace False
+
+Solving...
+
+Access: 9  MISS FirstIn ->          [9] <- Lastin  Replaced:- [Hits:0 Misses:1]
+Access: 9  HIT  FirstIn ->          [9] <- Lastin  Replaced:- [Hits:1 Misses:1]
+Access: 0  MISS FirstIn ->       [9, 0] <- Lastin  Replaced:- [Hits:1 Misses:2]
+Access: 0  HIT  FirstIn ->       [9, 0] <- Lastin  Replaced:- [Hits:2 Misses:2]
+Access: 8  MISS FirstIn ->    [9, 0, 8] <- Lastin  Replaced:- [Hits:2 Misses:3]
+Access: 7  MISS FirstIn ->    [0, 8, 7] <- Lastin  Replaced:9 [Hits:2 Misses:4]
+Access: 6  MISS FirstIn ->    [8, 7, 6] <- Lastin  Replaced:0 [Hits:2 Misses:5]
+Access: 3  MISS FirstIn ->    [7, 6, 3] <- Lastin  Replaced:8 [Hits:2 Misses:6]
+Access: 6  HIT  FirstIn ->    [7, 6, 3] <- Lastin  Replaced:- [Hits:3 Misses:6]
+Access: 6  HIT  FirstIn ->    [7, 6, 3] <- Lastin  Replaced:- [Hits:4 Misses:6]
+
+FINALSTATS hits 4   misses 6   hitrate 40.00
+
+2.对于大小为 5 的高速缓存，为以下每个策略生成最差情况的地址引用序列：FIFO、LRU 和 MRU(最差情况下的引用序列导致尽可能多的未命中）。 对于最差情况下的引用序列，需要的缓存增大多少，才能大幅提高性能，并接近 OPT?
+最差情况需要缓存增大到与页号相同
+
+3.生成一个随机追踪序列（使用 Python 或 Perl).你预计不同的策略在这样的追踪序列上的表现如何？
+
+4.现在生成一些局部性追踪序列。如何能够产生这样的追踪序列？LRU 表现如何？RAND 比 LRU 好多少？CLOCK 表现如何？CLOCK 使用不同数量的时钟位，表现如何？
+
+5.使用像 valgrind 这样的程序来测试真实应用程序并生成虚拟页面引用序列。例如，运行 valgrind --tool=lackey --trace-mem=yes ls 将为程序 1s 所做的每个指令和数据引用， 输出近乎完整的引用追踪。为了使上述仿真器有用，你必须首先将每个虚拟内存引用转换为虚拟页码引用(通过屏蔽偏移量并向右移位来完成)。为了满足大部分请求，你的应用程序追踪需要多大的缓 存？随着缓存大小的增加绘制其工作集的图形。
